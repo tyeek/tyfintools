@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <title>金融计算器工具箱</title>
+    <link rel="icon" href="favicon.ico">
+    <style>
+        #scrollToTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        #scrollToTopBtn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <!-- 导航栏 -->
+    <nav class="bg-blue-500 p-4 text-white">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">金融计算器工具箱</h1>
+            <ul class="flex space-x-4">
+                <li><a href="#" class="hover:underline">网站首页</a></li>
+                <li><a href="https://tydocs.pages.dev" target="_blank" class="hover:underline">我的博客</a></li>
+                <li><a href="https://frmdocs.pages.dev" target="_blank" class="hover:underline">FRM知识点梳理</a></li>
+                <li><a href="https://github.com/tyeek" target="_blank" class="hover:underline">我的Github链接</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 首页 -->
+    <div class="container mx-auto p-4">
+        <h2 class="text-2xl font-bold mb-4">工具入口</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <a href="#var-calculator"
+                class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <h3 class="text-xl font-bold mb-2">VaR（风险价值）计算器</h3>
+                <p class="text-gray-600">计算投资组合的风险价值。</p>
+            </a>
+            <a href="#option-pricer"
+                class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <h3 class="text-xl font-bold mb-2">期权定价器（BSM）</h3>
+                <p class="text-gray-600">使用 BSM 模型为期权定价。</p>
+            </a>
+            <a href="#bond-calculator"
+                class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <h3 class="text-xl font-bold mb-2">债券价格与收益率计算器</h3>
+                <p class="text-gray-600">计算债券的价格和收益率。</p>
+            </a>
+            <a href="#duration-convexity-calculator"
+                class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <h3 class="text-xl font-bold mb-2">久期/凸度计算器</h3>
+                <p class="text-gray-600">计算债券的久期和凸度。</p>
+            </a>
+            <a href="#dcf-calculator"
+                class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <h3 class="text-xl font-bold mb-2">折现现金流估值（DCF）</h3>
+                <p class="text-gray-600">使用折现现金流方法对资产进行估值。</p>
+            </a>
+            <a href="#new-tool"
+                class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                <h3 class="text-xl font-bold mb-2">工具箱说明</h3>
+                <p class="text-gray-600">为您提供便捷的金融计算服务。</p>
+            </a>
+        </div>
+    </div>
+
+    <!-- VaR计算器 -->
+    <div id="var-calculator" class="container mx-auto p-4">
+        <h2 class="text-2xl font-bold mb-4">VaR（风险价值）计算器</h2>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <label for="var-investment" class="block text-sm font-medium text-gray-700">投资金额：</label>
+            <input type="number" id="var-investment" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入投资金额">
+            <label for="var-volatility" class="block text-sm font-medium text-gray-700 mt-4">波动率（%）：</label>
+            <input type="number" id="var-volatility" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入波动率">
+            <label for="var-confidence" class="block text-sm font-medium text-gray-700 mt-4">置信水平（%）：</label>
+            <input type="number" id="var-confidence" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入置信水平">
+            <button onclick="calculateVaR()"
+                class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">计算</button>
+            <p id="var-result" class="mt-4"></p>
+        </div>
+    </div>
+
+    <!-- 期权定价器（Black - Scholes） -->
+    <div id="option-pricer" class="container mx-auto p-4">
+        <h2 class="text-2xl font-bold mb-4">期权定价器（BSM）</h2>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <label for="option-spot" class="block text-sm font-medium text-gray-700">标的资产价格：</label>
+            <input type="number" id="option-spot" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入标的资产价格">
+            <label for="option-strike" class="block text-sm font-medium text-gray-700 mt-4">行权价格：</label>
+            <input type="number" id="option-strike" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入行权价格">
+            <label for="option-time" class="block text-sm font-medium text-gray-700 mt-4">到期时间（年）：</label>
+            <input type="number" id="option-time" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入到期时间">
+            <label for="option-volatility" class="block text-sm font-medium text-gray-700 mt-4">波动率（%）：</label>
+            <input type="number" id="option-volatility" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入波动率">
+            <label for="option-risk-free" class="block text-sm font-medium text-gray-700 mt-4">无风险利率（%）：</label>
+            <input type="number" id="option-risk-free" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入无风险利率">
+            <button onclick="calculateOptionPrice()"
+                class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">计算</button>
+            <p id="option-result" class="mt-4"></p>
+        </div>
+    </div>
+
+    <!-- 债券价格与收益率计算器 -->
+    <div id="bond-calculator" class="container mx-auto p-4">
+        <h2 class="text-2xl font-bold mb-4">债券价格与收益率计算器</h2>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <label for="bond-face" class="block text-sm font-medium text-gray-700">债券面值：</label>
+            <input type="number" id="bond-face" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入债券面值">
+            <label for="bond-coupon" class="block text-sm font-medium text-gray-700 mt-4">票面利率（%）：</label>
+            <input type="number" id="bond-coupon" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入票面利率">
+            <label for="bond-yield" class="block text-sm font-medium text-gray-700 mt-4">到期收益率（%）：</label>
+            <input type="number" id="bond-yield" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入到期收益率">
+            <label for="bond-maturity" class="block text-sm font-medium text-gray-700 mt-4">到期年限：</label>
+            <input type="number" id="bond-maturity" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入到期年限">
+            <button onclick="calculateBondPrice()"
+                class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">计算</button>
+            <p id="bond-result" class="mt-4"></p>
+        </div>
+    </div>
+
+    <!-- 久期/凸度计算器 -->
+    <div id="duration-convexity-calculator" class="container mx-auto p-4">
+        <h2 class="text-2xl font-bold mb-4">久期/凸度计算器</h2>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <label for="dc-bond-face" class="block text-sm font-medium text-gray-700">债券面值：</label>
+            <input type="number" id="dc-bond-face" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入债券面值">
+            <label for="dc-bond-coupon" class="block text-sm font-medium text-gray-700 mt-4">票面利率（%）：</label>
+            <input type="number" id="dc-bond-coupon" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入票面利率">
+            <label for="dc-bond-yield" class="block text-sm font-medium text-gray-700 mt-4">到期收益率（%）：</label>
+            <input type="number" id="dc-bond-yield" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入到期收益率">
+            <label for="dc-bond-maturity" class="block text-sm font-medium text-gray-700 mt-4">到期年限：</label>
+            <input type="number" id="dc-bond-maturity" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入到期年限">
+            <button onclick="calculateDurationConvexity()"
+                class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">计算</button>
+            <p id="dc-result" class="mt-4"></p>
+        </div>
+    </div>
+
+    <!-- 折现现金流估值（DCF） -->
+    <div id="dcf-calculator" class="container mx-auto p-4">
+        <h2 class="text-2xl font-bold mb-4">折现现金流估值（DCF）</h2>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <label for="dcf-cashflows" class="block text-sm font-medium text-gray-700">各期现金流（用英文逗号分隔）：</label>
+            <input type="text" id="dcf-cashflows" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入各期现金流">
+            <label for="dcf-discount" class="block text-sm font-medium text-gray-700 mt-4">折现率（%）：</label>
+            <input type="number" id="dcf-discount" class="mt-1 block w-full border border-gray-300 rounded-md py-2 px-3"
+                placeholder="请输入折现率">
+            <button onclick="calculateDCF()"
+                class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">计算</button>
+            <p id="dcf-result" class="mt-4"></p>
+        </div>
+    </div>
+
+    <!-- 工具箱工具说明 -->
+    <div id="new-tool" class="container mx-auto p-4">
+        <h2 class="text-2xl font-bold mb-4">工具箱说明</h2>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <p class="text-gray-600">本工具箱为用户提供了一系列实用的金融计算工具，帮助用户快速准确地完成各种金融计算任务。以下是各工具的简要说明：</p>
+            <h3 class="text-xl font-bold mb-2 mt-4">VaR（风险价值）</h3>
+            <p class="text-gray-600">VaR 是一种常用的风险度量指标，它衡量了投资组合在一定置信水平下，在未来特定时间段内可能遭受的最大损失。例如，若一个投资组合的 95% VaR 为 100 万元，意味着在 95% 的置信水平下，该投资组合在未来特定时间段内的损失不会超过 100 万元。</p>
+            <h3 class="text-xl font-bold mb-2 mt-4">期权定价（BSM）</h3>
+            <p class="text-gray-600">BSM 模型是一种经典的期权定价模型，用于计算欧式期权的理论价格。该模型假设市场是有效的，标的资产价格遵循几何布朗运动，并且无风险利率和波动率是恒定的。它考虑了标的资产价格、行权价格、到期时间、波动率和无风险利率等因素，为期权定价提供了一种科学的方法。</p>
+            <h3 class="text-xl font-bold mb-2 mt-4">债券价格与收益率</h3>
+            <p class="text-gray-600">债券价格是债券未来现金流（包括利息和本金）的现值之和，收益率是使债券价格等于其当前市场价格的折现率。债券价格与收益率之间存在反向关系，即收益率上升时，债券价格下降；收益率下降时，债券价格上升。</p>
+            <h3 class="text-xl font-bold mb-2 mt-4">久期/凸度</h3>
+            <p class="text-gray-600">久期是衡量债券价格对利率变动敏感性的指标，它表示债券现金流的加权平均到期时间。久期越长，债券价格对利率变动的敏感性越高。凸度是衡量久期对利率变动敏感性的指标，它反映了债券价格 - 收益率曲线的弯曲程度。凸度越大，债券价格在利率变动时的波动越平缓。</p>
+            <h3 class="text-xl font-bold mb-2 mt-4">折现现金流估值（DCF）</h3>
+            <p class="text-gray-600">DCF 方法是一种常用的资产估值方法，它通过将资产未来各期的现金流按照一定的折现率折现到当前，得到资产的内在价值。折现率反映了投资者对资产风险的预期，折现率越高，资产的现值越低。此方法适用于对具有稳定现金流的资产进行估值，如企业、项目等。</p>
+        </div>
+    </div>
+
+    <!-- 滚动到顶部按钮 -->
+    <button id="scrollToTopBtn" class="hidden fixed bottom-10 right-10 p-4 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+        </svg>
+    </button>
+
+    <script>
+        window.addEventListener('scroll', () => {
+            const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+            if (window.scrollY > 300) {
+                scrollToTopBtn.style.display = 'block';
+            } else {
+                scrollToTopBtn.style.display = 'none';
+            }
+        });
+
+        document.getElementById('scrollToTopBtn').addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    </script>
+
+    <script>
+        function calculateVaR() {
+            const investment = parseFloat(document.getElementById('var-investment').value);
+            const volatility = parseFloat(document.getElementById('var-volatility').value) / 100;
+            const confidence = parseFloat(document.getElementById('var-confidence').value) / 100;
+            if (isNaN(investment) || isNaN(volatility) || isNaN(confidence)) {
+                document.getElementById('var-result').textContent = '请输入有效的数值。';
+                return;
+            }
+            const zScore = {
+                0.9: 1.28,
+                0.95: 1.645,
+                0.99: 2.33
+            }[confidence];
+            const varValue = investment * volatility * zScore;
+            document.getElementById('var-result').textContent = `VaR（风险价值）: ${varValue.toFixed(2)}，表示在给定的置信水平下，投资组合可能遭受的最大损失。`;
+        }
+
+        function calculateOptionPrice() {
+            const S = parseFloat(document.getElementById('option-spot').value);
+            const K = parseFloat(document.getElementById('option-strike').value);
+            const T = parseFloat(document.getElementById('option-time').value);
+            const sigma = parseFloat(document.getElementById('option-volatility').value) / 100;
+            const r = parseFloat(document.getElementById('option-risk-free').value) / 100;
+            if (isNaN(S) || isNaN(K) || isNaN(T) || isNaN(sigma) || isNaN(r)) {
+                document.getElementById('option-result').textContent = '请输入有效的数值。';
+                return;
+            }
+            const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+            const d2 = d1 - sigma * Math.sqrt(T);
+            const N = (x) => {
+                return 0.5 * (1 + Math.erf(x / Math.sqrt(2)));
+            };
+            const callPrice = S * N(d1) - K * Math.exp(-r * T) * N(d2);
+            const putPrice = K * Math.exp(-r * T) * N(-d2) - S * N(-d1);
+            document.getElementById('option-result').textContent = `看涨期权价格: ${callPrice.toFixed(2)}，看跌期权价格: ${putPrice.toFixed(2)}。`;
+        }
+
+        function calculateBondPrice() {
+            const face = parseFloat(document.getElementById('bond-face').value);
+            const couponRate = parseFloat(document.getElementById('bond-coupon').value) / 100;
+            const yieldRate = parseFloat(document.getElementById('bond-yield').value) / 100;
+            const maturity = parseFloat(document.getElementById('bond-maturity').value);
+            if (isNaN(face) || isNaN(couponRate) || isNaN(yieldRate) || isNaN(maturity)) {
+                document.getElementById('bond-result').textContent = '请输入有效的数值。';
+                return;
+            }
+            const couponPayment = face * couponRate;
+            let bondPrice = 0;
+            for (let i = 1; i <= maturity; i++) {
+                bondPrice += couponPayment / Math.pow(1 + yieldRate, i);
+            }
+            bondPrice += face / Math.pow(1 + yieldRate, maturity);
+            document.getElementById('bond-result').textContent = `债券价格: ${bondPrice.toFixed(2)}。`;
+        }
+
+        function calculateDurationConvexity() {
+            const face = parseFloat(document.getElementById('dc-bond-face').value);
+            const couponRate = parseFloat(document.getElementById('dc-bond-coupon').value) / 100;
+            const yieldRate = parseFloat(document.getElementById('dc-bond-yield').value) / 100;
+            const maturity = parseFloat(document.getElementById('dc-bond-maturity').value);
+            if (isNaN(face) || isNaN(couponRate) || isNaN(yieldRate) || isNaN(maturity)) {
+                document.getElementById('dc-result').textContent = '请输入有效的数值。';
+                return;
+            }
+            const couponPayment = face * couponRate;
+            let bondPrice = 0;
+            let weightedCashFlows = 0;
+            let convexity = 0;
+            for (let i = 1; i <= maturity; i++) {
+                const cashFlow = couponPayment;
+                if (i === maturity) {
+                    cashFlow += face;
+                }
+                const discountedCashFlow = cashFlow / Math.pow(1 + yieldRate, i);
+                bondPrice += discountedCashFlow;
+                weightedCashFlows += i * discountedCashFlow;
+                convexity += (i * (i + 1) * discountedCashFlow) / Math.pow(1 + yieldRate, 2);
+            }
+            const duration = weightedCashFlows / bondPrice;
+            document.getElementById('dc-result').textContent = `久期: ${duration.toFixed(2)}，凸度: ${convexity.toFixed(2)}。久期衡量债券价格对利率变动的敏感性，凸度衡量久期对利率变动的敏感性。`;
+        }
+
+        function calculateDCF() {
+            const cashflowsInput = document.getElementById('dcf-cashflows').value;
+            const cashflows = cashflowsInput.split(',').map(Number);
+            const discountRate = parseFloat(document.getElementById('dcf-discount').value) / 100;
+            if (cashflows.some(isNaN) || isNaN(discountRate)) {
+                document.getElementById('dcf-result').textContent = '请输入有效的数值。';
+                return;
+            }
+            let dcfValue = 0;
+            for (let i = 0; i < cashflows.length; i++) {
+                dcfValue += cashflows[i] / Math.pow(1 + discountRate, i + 1);
+            }
+            document.getElementById('dcf-result').textContent = `折现现金流估值（DCF）: ${dcfValue.toFixed(2)}。该值表示资产的内在价值。`;
+        }
+    </script>
+</body>
+
+</html>
+    
